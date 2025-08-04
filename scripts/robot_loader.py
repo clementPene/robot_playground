@@ -44,7 +44,6 @@ def load_robot_and_visualizer():
         model, collision_model, visual_model = pin.buildModelsFromUrdf(
             urdf_filename,
             mesh_dir,
-            pin.JointModelFreeFlyer()
         )
         print("Pinocchio model loaded successfully.")
     except Exception as e:
