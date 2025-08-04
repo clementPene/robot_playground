@@ -1,15 +1,21 @@
+prerequies:
+
+install [uv](https://docs.astral.sh/uv/getting-started/installation/)
+
+```bash
 sudo apt update && sudo apt install libeigen3-dev libboost-all-dev liboctomap-dev
+sudo apt install python-is-python3
+```
 
-sudo apt install python-is-python3 python3-pip python3-venv
-
-commandes :
-
-lancer l'environement :
+launch Jupyter notebook :
+```bash
 source .venv/bin/activate
-
-lancer le Jupyter lab :
 jupyter lab
+```
 
-ou
+or
 
+```bash
 uv run jupyter lab
+```
+
