@@ -5,20 +5,15 @@ import os
 import numpy as np
 import meshcat.geometry as g
 
-def load_robot_and_visualizer():
+def load_robot_paths():
     """
-    This function handles the entire process of loading the H12 robot
-    and configuring the MeshCat visualizer.
-
-    It returns the essential objects for interacting with the robot.
+    This function handles paths to load the robot
 
     Returns:
-        tuple: A tuple containing (model, viz, robot_visualizer)
+        tuple: A tuple containing (urdf_path, mesh_dir)
     """
-    print("--- Starting load process via robot_loader module ---")
+    print("--- Searching for robot paths ---")
 
-    # --- 1. Configure Paths ---
-    # We use a path relative to this file, which makes the code more portable.
     current_file_path = os.path.abspath(__file__)
     current_file_dir = os.path.dirname(current_file_path)
     project_dir = os.path.dirname(current_file_dir)
@@ -32,54 +27,21 @@ def load_robot_and_visualizer():
     assert os.path.exists(mesh_dir), f"Mesh directory not found: {mesh_dir}"
     print("Asset paths verified.")
 
-    # --- 2. Launch and connect to MeshCat visualizer ---
-    print("Launching MeshCat...")
-    viz = meshcat.Visualizer()
-    print("Adding a grid to represent the ground.")
-    viz["/Grid"].set_property("visible", True)
+    print(f"Detected urdf file: {urdf_filename}")
+    print(f"Detected mesh directory: {mesh_dir}")
 
-    # --- 3. Load robot into Pinocchio ---
-    print("Loading robot model into Pinocchio...")
-    try:
-        model, collision_model, visual_model = pin.buildModelsFromUrdf(
-            urdf_filename,
-            mesh_dir,
-        )
-        print("Pinocchio model loaded successfully.")
-    except Exception as e:
-        print(f"Error loading robot: {e}")
-        return None, None, None
-
-    # --- 4. Create Pinocchio visualizer ---
-    robot_visualizer = MeshcatVisualizer(model, collision_model, visual_model)
-
-    print("--- Loading complete. Objects are ready to be used. ---")
-
-    # Return the objects that will be useful in the notebook
-    return model, viz, robot_visualizer
+    return urdf_filename, mesh_dir
 
 # This part only runs if you launch "python robot_loader.py"
-# It's perfect for testing the module independently
 if __name__ == '__main__':
-    print("Testing the loading module...")
+    print("Testing the path loading module...")
 
-    model, viz, robot_visualizer = load_robot_and_visualizer()
+    urdf_path, mesh_path = load_robot_paths()
     
-    if model:
-        print("\nThe module worked! Initializing test visualization.")
+    if urdf_path:
+        print("\nModule is working !")
+        print(f"URDF path found: {urdf_path}")
+        print(f"Mesh path found: {mesh_path}")
+        print("\nTest successful !")
 
-        # Open the MeshCat window if it's not already open
-        viz.open()
 
-        # Initialize the visualizer with the models
-        robot_visualizer.initViewer(viewer=viz)
-        robot_visualizer.loadViewerModel()
-
-        # Display the robot in a raised neutral position
-        q0 = pin.neutral(model)
-        q0[2] = 1.03 # With this value, it seems that the robot feets are close to the ground
-        robot_visualizer.display(q0)
-
-        print("\nTest successful! A robot should be visible in MeshCat.")
-        print("Press Enter to quit.")
-        input()
