@@ -1,7 +1,7 @@
 <robot name="h1_5">
 
   <mujoco>
-    <compiler meshdir="meshes" discardvisual="false"/>
+    <compiler strippath="false" discardvisual="false"/>
   </mujoco>
 
   <!-- [CAUTION] uncomment when convert to mujoco -->
@@ -161,8 +161,8 @@
       <geometry>
         <mesh filename="scene/meshes/left_ankle_roll_link.STL"/>
       </geometry>
-      <material name="dark">
-        <color rgba="0.1 0.1 0.1 1"/>
+      <material name="blue">
+        <color rgba="0.27 0.51 0.71 1"/>
       </material>
     </visual>
     <collision>
