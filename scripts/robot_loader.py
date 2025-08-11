@@ -32,6 +32,52 @@ def load_robot_paths():
 
     return urdf_filename, mesh_dir
 
+def launch_visualization():
+    """
+    Load and configure the robot, initialize Meshcat and set up the visualizer.
+
+    This function encapsulates the following steps:
+    1. Loading the robot paths.
+    2. Launching the Meshcat visualizer.
+    3. Loading the robot model into Pinocchio.
+    4. Initializing the Pinocchio visualizer.
+
+    Returns:
+        tuple: A tuple containing the ready-to-use objects:
+               (model, collision_model, visual_model, robot_visualizer, viz)
+               Returns (None, None, None, None, None) in case of error.
+    """
+
+    try:
+        urdf_path, mesh_path = load_robot_paths()
+    except AssertionError as e:
+        print(f"Error in path files : {e}")
+        return None, None, None, None, None
+
+    print("Launching MeshCat...")
+    viz = meshcat.Visualizer()
+    viz.open()
+    print("Adding a grid to represent the ground.")
+    viz["/Grid"].set_property("visible", True)
+
+    print("Loading robot model into Pinocchio...")
+    try:
+        model, collision_model, visual_model = pin.buildModelsFromUrdf(
+            urdf_path,
+            mesh_path
+        )
+        print("Pinocchio model loaded successfully.")
+    except Exception as e:
+        print(f"Error loading model: {e}")
+        return None, None, None, None, viz # Return viz to see the grid even if the robot fails
+    
+    robot_visualizer = MeshcatVisualizer(model, collision_model, visual_model)
+    robot_visualizer.initViewer(viewer=viz)
+    robot_visualizer.loadViewerModel()
+    print("\nEnvironment is ready !")
+
+    return model, collision_model, visual_model, robot_visualizer, viz
+
 # This part only runs if you launch "python robot_loader.py"
 if __name__ == '__main__':
     print("Testing the path loading module...")
