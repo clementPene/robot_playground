@@ -64,7 +64,8 @@ def launch_visualization():
     try:
         model, collision_model, visual_model = pin.buildModelsFromUrdf(
             urdf_path,
-            mesh_path
+            mesh_path,
+            pin.JointModelFreeFlyer()
         )
         print("Pinocchio model loaded successfully.")
     except Exception as e:

@@ -30,6 +30,9 @@ _TRAJECTORY_FILE_ORDER = [
 # Indices for reordering (calculated only once on module import)
 _SOURCE_INDICES = [_TRAJECTORY_FILE_ORDER.index(joint) for joint in _PINOCCHIO_JOINT_ORDER]
 
+_INVERSE_JOINT_INDICES = np.empty_like(_SOURCE_INDICES)
+_INVERSE_JOINT_INDICES[_SOURCE_INDICES] = np.arange(len(_TRAJECTORY_FILE_ORDER))
+
 def convert_trajectory_to_pinocchio_format(raw_trajectory_data):
     """
     Reorders a raw trajectory and separates it into configuration (q) and 
@@ -77,6 +80,64 @@ def convert_trajectory_to_pinocchio_format(raw_trajectory_data):
         base_ang_vel,
         reordered_joint_vel
     ], axis=1)
-    
+
+    print(f"raw trajectory dimension (raw_trajectory.shape): {raw_trajectory_data.shape}")
+    print(f"q trajectory dimension (q_trajectory.shape): {q_trajectory.shape}")
+    print(f"v trajectory dimension (v_trajectory.shape): {v_trajectory.shape}")
+
     print("Raw trajectory converted and separated into q and v trajectories.")
     return q_trajectory, v_trajectory
+
+
+def convert_pinocchio_to_trajectory_format(q_trajectory, v_trajectory):
+    """
+    Reconstructs the raw trajectory format from Pinocchio-formatted 
+    configuration (q) and velocity (v) trajectories.
+
+    This function is the inverse of 'convert_trajectory_to_pinocchio_format'.
+    It handles the inverse quaternion permutation (from xyzw to wxyz) and
+    the reordering of joint position/velocity columns back to their original order.
+
+    Args:
+        q_trajectory (np.ndarray): 
+            Trajectory of configurations, Pinocchio format, shape (N, 34).
+        v_trajectory (np.ndarray): 
+            Trajectory of velocities, Pinocchio format, shape (N, 33).
+
+    Returns:
+        np.ndarray: 
+            The reconstructed raw trajectory array, shape (N, 67).
+    """
+    # Slice the q and v trajectories
+    base_pos = q_trajectory[:, :3]
+    pinocchio_quat_xyzw = q_trajectory[:, 3:7]
+    pinocchio_joint_pos = q_trajectory[:, 7:]
+    
+    base_lin_vel = v_trajectory[:, :3]
+    base_ang_vel = v_trajectory[:, 3:6]
+    pinocchio_joint_vel = v_trajectory[:, 6:]
+
+    # Reverse the data reordering
+    # Invert the quaternion permutation from xyzw (Pinocchio) to wxyz (source)
+    base_quat_wxyz = pinocchio_quat_xyzw[:, [3, 0, 1, 2]]
+
+    # Invert the joint reordering to return to the file order
+    joint_pos_raw = pinocchio_joint_pos[:, _INVERSE_JOINT_INDICES]
+    joint_vel_raw = pinocchio_joint_vel[:, _INVERSE_JOINT_INDICES]
+
+    # Re-assemble into a single raw trajectory vector
+    raw_trajectory_data = np.concatenate([
+        base_pos,
+        base_quat_wxyz,
+        base_lin_vel,
+        base_ang_vel,
+        joint_pos_raw,
+        joint_vel_raw
+    ], axis=1)
+
+    print(f"q trajectory dimension (q_trajectory.shape): {q_trajectory.shape}")
+    print(f"v trajectory dimension (v_trajectory.shape): {v_trajectory.shape}")
+    print(f"Reconstituted raw trajectory dimension (raw_trajectory.shape): {raw_trajectory_data.shape}")
+
+    print("Pinocchio q and v trajectories converted back to raw trajectory format.")
+    return raw_trajectory_data

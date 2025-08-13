@@ -5,3 +5,4 @@ crocoddyl
 mim-solvers
 mujoco
 matplotlib
+pyyaml
