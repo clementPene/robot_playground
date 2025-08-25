@@ -20,8 +20,8 @@ def load_robot_paths():
 
     print(f"Detected project root directory: {project_dir}")
     
-    urdf_filename = os.path.join(project_dir, "robot_models/biped_assets/biped_assets/models/h12/h12_12dof.urdf")
-    mesh_dir = os.path.join(project_dir, "robot_models/biped_assets/biped_assets/models/h12")
+    urdf_filename = os.path.join(project_dir, "robot_models/h1_2_description/h1_2_handless.urdf")
+    mesh_dir = os.path.join(project_dir, "robot_models/h1_2_description")
 
     assert os.path.exists(urdf_filename), f"URDF file not found: {urdf_filename}"
     assert os.path.exists(mesh_dir), f"Mesh directory not found: {mesh_dir}"
