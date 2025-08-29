@@ -79,6 +79,81 @@ def launch_visualization():
 
     return model, collision_model, visual_model, robot_visualizer, viz
 
+
+def add_contact_frames(model, 
+                       left_foot_parent_frame_name='left_ankle_roll_link', 
+                       right_foot_parent_frame_name='right_ankle_roll_link', 
+                       contact_z_offset=0.05):
+    """
+    Adds operational frames under the feet to represent ground contact points.
+
+    This function modifies the Pinocchio model by adding two new frames,
+    'left_ground_contact' and 'right_ground_contact'. These frames are positioned
+    relative to their parent ankle frames with a vertical offset.
+
+    Args:
+        model (pin.Model): The Pinocchio model to be modified.
+        left_foot_parent_frame_name (str): The name of the existing frame in the left foot 
+                                           to which the new contact frame will be attached.
+        right_foot_parent_frame_name (str): The name of the existing frame in the right foot.
+        contact_z_offset (float): The vertical distance to translate downwards from the 
+                                  parent frame to the new contact frame.
+
+    Returns:
+        pin.Model: The modified model with the new contact frames.
+    """
+
+    left_contact_frame_name = "left_ground_contact"
+    right_contact_frame_name = "right_ground_contact"
+
+    # Create the SE(3) transformation for the offset
+    # This represents a pure translation along the parent frame's Z-axis.
+    offset_translation = np.array([0., 0., -contact_z_offset])
+    contact_offset_pose = pin.SE3(np.eye(3), offset_translation)
+
+    # Get parent frame information
+    try:
+        left_foot_parent_id = model.getFrameId(left_foot_parent_frame_name)
+        right_foot_parent_id = model.getFrameId(right_foot_parent_frame_name)
+    except KeyError as e:
+        print(f"Error: A parent frame could not be found in the model: {e}")
+        print("Aborting frame creation.")
+        return model
+
+    # Add the left contact frame if it does not already exist
+    if not model.existFrame(left_contact_frame_name):
+        model.addFrame(pin.Frame(left_contact_frame_name,
+                                 model.frames[left_foot_parent_id].parentJoint,
+                                 model.frames[left_foot_parent_id].placement * contact_offset_pose,
+                                 pin.FrameType.OP_FRAME))
+        print(f"Frame '{left_contact_frame_name}' added successfully.")
+    else:
+        print(f"Frame '{left_contact_frame_name}' already exists. Skipping.")
+
+    # Add the right contact frame if it does not already exist
+    if not model.existFrame(right_contact_frame_name):
+        model.addFrame(pin.Frame(right_contact_frame_name,
+                                 model.frames[right_foot_parent_id].parentJoint,
+                                 model.frames[right_foot_parent_id].placement * contact_offset_pose,
+                                 pin.FrameType.OP_FRAME))
+        print(f"Frame '{right_contact_frame_name}' added successfully.")
+    else:
+        print(f"Frame '{right_contact_frame_name}' already exists. Skipping.")
+
+    # --- this part is to thune CONTACT_Z_OFFSET ---
+    #sphere_geometry1 = mg.Sphere(0.04)
+    #left_ankle_pose = data.oMf[left_foot_middle_frame_id]
+    #sphere_pose = left_ankle_pose * contact_offset_pose
+    #red_material = mg.MeshLambertMaterial(color=0xff0000)
+    #viz[f"markers/{left_contact_frame_name}"].set_object(sphere_geometry1, red_material)
+    #viz[f"markers/{left_contact_frame_name}"].set_transform(sphere_pose.homogeneous)
+
+    #sphere_geometry2 = mg.Sphere(0.04)
+    #viz[f"markers/{right_foot_frame_id}"].set_object(sphere_geometry2, red_material)
+    #viz[f"markers/{right_foot_frame_id}"].set_transform(right_frame_pose.homogeneous)
+
+    return model
+
 # This part only runs if you launch "python robot_loader.py"
 if __name__ == '__main__':
     print("Testing the path loading module...")
