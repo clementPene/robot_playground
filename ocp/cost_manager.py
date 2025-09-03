@@ -540,4 +540,40 @@ class CostModelManager:
         Returns:
             crocoddyl.CostModelManager: The set of configured costs.
         """
-        return self.cost_model_manager
+        return self.cost_model_sum
+    
+    def display_costs(self):
+        """
+        Prints a detailed, human-readable summary of all costs configured
+        in this cost model.
+        """
+        print("\n---- Cost Model Summary ----")
+        
+        costs_map = self.cost_model_sum.costs
+        
+        if not costs_map:
+            print("  No costs have been configured in this model.")
+            print("--------------------------\n")
+            return
+        
+        print(f"  Total number of costs: {len(costs_map)}")
+        print("--------------------------")
+        
+        for item in costs_map:
+            # a. Extraire le nom via l'attribut .key
+            name = item.key
+            
+            # b. Extraire l'objet CostItem en appelant la méthode .data()
+            cost_item = item.data()
+            
+            # c. Extraire les informations et les afficher de manière formatée
+            weight = cost_item.weight
+            cost_type = type(cost_item.cost).__name__ # Utilise .__name__ pour un affichage plus propre
+            
+            print(f"  > Cost Name: '{name}'")
+            print(f"    - Weight: {weight}")
+            print(f"    - Type  : {cost_type}")
+        
+        print("--------------------------\n")
+        
+        

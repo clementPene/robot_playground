@@ -72,6 +72,9 @@ def launch_visualization():
         print(f"Error loading model: {e}")
         return None, None, None, None, viz # Return viz to see the grid even if the robot fails
     
+    # add contact frame
+    model = add_contact_frames(model, contact_z_offset=0.05)
+    
     robot_visualizer = MeshcatVisualizer(model, collision_model, visual_model)
     robot_visualizer.initViewer(viewer=viz)
     robot_visualizer.loadViewerModel()
@@ -103,8 +106,8 @@ def add_contact_frames(model,
         pin.Model: The modified model with the new contact frames.
     """
 
-    left_contact_frame_name = "left_ground_contact"
-    right_contact_frame_name = "right_ground_contact"
+    left_contact_frame_name = "left_ground"
+    right_contact_frame_name = "right_ground"
 
     # Create the SE(3) transformation for the offset
     # This represents a pure translation along the parent frame's Z-axis.
@@ -141,29 +144,14 @@ def add_contact_frames(model,
         print(f"Frame '{right_contact_frame_name}' already exists. Skipping.")
 
     # --- this part is to thune CONTACT_Z_OFFSET ---
-    #sphere_geometry1 = mg.Sphere(0.04)
-    #left_ankle_pose = data.oMf[left_foot_middle_frame_id]
-    #sphere_pose = left_ankle_pose * contact_offset_pose
-    #red_material = mg.MeshLambertMaterial(color=0xff0000)
-    #viz[f"markers/{left_contact_frame_name}"].set_object(sphere_geometry1, red_material)
-    #viz[f"markers/{left_contact_frame_name}"].set_transform(sphere_pose.homogeneous)
-
-    #sphere_geometry2 = mg.Sphere(0.04)
-    #viz[f"markers/{right_foot_frame_id}"].set_object(sphere_geometry2, red_material)
-    #viz[f"markers/{right_foot_frame_id}"].set_transform(right_frame_pose.homogeneous)
+    # sphere_geometry = mg.Sphere(0.04)
+    # red_material = mg.MeshLambertMaterial(color=0xff0000)
+    # frame_name = "left_ground"
+    # frame_id = model.getFrameId(frame_name)
+    # sphere_pose = data.oMf[frame_id]
+    # viz[f"markers/{frame_name}"].set_object(sphere_geometry, red_material)
+    # viz[f"markers/{frame_name}"].set_transform(sphere_pose.homogeneous)
 
     return model
-
-# This part only runs if you launch "python robot_loader.py"
-if __name__ == '__main__':
-    print("Testing the path loading module...")
-
-    urdf_path, mesh_path = load_robot_paths()
-    
-    if urdf_path:
-        print("\nModule is working !")
-        print(f"URDF path found: {urdf_path}")
-        print(f"Mesh path found: {mesh_path}")
-        print("\nTest successful !")
 
 
