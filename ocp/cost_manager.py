@@ -74,7 +74,7 @@ class CostModelManager:
 
         Args:
             config_filepath (str): The path to the YAML file with the state weights.
-            x_ref (np.ndarray): The reference state vector [q_ref, v_ref] to track.
+            x_ref (np.ndarray): The reference state vector [q_ref, v_ref] to track. size is nv * 2
             weight (float): A global scalar weight for the entire cost term.
             name (str): A unique name for the cost.
 
@@ -109,10 +109,10 @@ class CostModelManager:
             raise RuntimeError(f"Failed to load or parse weights from {config_filepath}: {e}")
 
         # Check that the final weight vector matches the model's state dimension
-        if len(weights) != self.state.nx:
+        if len(weights) != 2 * self.state.nv:
             raise ValueError(
                 f"Combined weights from file have size {len(weights)}, "
-                f"but the model's state dimension is {self.state.nx}."
+                f"but the model's state dimension is {2 * self.state.nv}."
             )
 
         # Create and add cost to the model
@@ -243,6 +243,7 @@ class CostModelManager:
 
         return self
     
+    # TODO -> need the model
     def add_state_limits_cost(self,
                               weight: float,
                               name: str = "state_limits"):
@@ -304,7 +305,8 @@ class CostModelManager:
 
         self.cost_model_sum.addCost(name=name, cost=cost, weight=weight)
         return self
-
+    
+    # TODO -> need the model
     def add_control_limits_cost(self,
                                 weight: float,
                                 name: str = "control_limits"):

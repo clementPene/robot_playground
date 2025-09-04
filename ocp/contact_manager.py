@@ -33,7 +33,7 @@ class ContactModelManager:
 
     def add_contact_6D(self,
                        frame_name: str,
-                       ref_type: pin.ReferenceFrame = pin.LOCAL) -> 'ContactModelManager':
+                       ref_type: pin.ReferenceFrame = pin.LOCAL_WORLD_ALIGNED) -> 'ContactModelManager':
         """Adds a 6D (surface) contact model to the collection.
 
         This type of contact constrains both the linear and angular velocity
@@ -62,7 +62,8 @@ class ContactModelManager:
                                                  frame_id,
                                                  ref_placement,
                                                  ref_type,
-                                                 self.actuation.nu)
+                                                 self.actuation.nu,
+                                                 np.array([200.0, 20.0]))
         self.contact_model_sum.addContact(contact_name, contact_model)
         
         return self
