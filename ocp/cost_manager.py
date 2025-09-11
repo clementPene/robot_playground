@@ -73,8 +73,8 @@ class CostModelManager:
             L(x) = weight * (1/2) * (w_1*(x_1 - x_ref_1)^2 + w_2*(x_2 - x_ref_2)^2 + ... + w_n*(x_n - x_ref_n)^2)
 
         Args:
-            config_filepath (str): The path to the YAML file with the state weights.
-            x_ref (np.ndarray): The reference state vector [q_ref, v_ref] to track. size is nv * 2
+            config_filepath (str): The path to the YAML file with the state weights. size is nv * 2
+            x_ref (np.ndarray): The reference state vector [q_ref, v_ref] to track. size is nv + nq
             weight (float): A global scalar weight for the entire cost term.
             name (str): A unique name for the cost.
 
@@ -533,6 +533,87 @@ class CostModelManager:
 
         self.cost_model_sum.addCost(name=name, cost=cost, weight=weight)
         
+        return self
+
+    def add_state_corridor_cost(self,
+                                x_ref: np.ndarray,
+                                config_filepath: str,
+                                weight: float = 1.0,
+                                scale: float = 1.0,
+                                name: str = "state_corridor"):
+        """
+        Add a “corridor” cost around the reference state using a quadratic barrier
+        on the state residual r = diff(x_ref, x).
+
+        Inside the bounds (|r_i| <= Δ_i): zero cost.
+        Outside: quadratic penalty on the violation.
+
+        Args:
+            x_ref : np.ndarray
+                Reference state of size nx = nq + nv (here 34 + 33 = 67 for your model).
+            config_filepath : str
+                Path to a YAML file defining the corridor widths (Δ) for dq and dv.
+            weight : float
+                Global weight applied to this cost term (scales the barrier).
+            scale : float
+                Homotopy scaling factor to tighten/loosen all bounds at once: Δ <- scale * Δ.
+            name : str
+                Unique name for this term inside the CostModelSum.
+            
+        Returns:
+            self: The CostModelManager instance for chainable calls.
+        """
+
+        if not isinstance(x_ref, np.ndarray):
+            raise TypeError(f"x_ref must be a numpy array, but got {type(x_ref)}.")
+
+        if x_ref.shape != (self.state.nx,):
+            raise ValueError(
+                f"x_ref must have shape ({self.state.nx},), but got {x_ref.shape}."
+            )
+
+        try:
+            with open(config_filepath, "r") as f:
+                cfg = yaml.safe_load(f)
+
+            q_tube = np.asarray(cfg["q_tube"], dtype=float)  # size is nv
+            v_tube = np.asarray(cfg["v_tube"], dtype=float)  # size is nv
+            yaml_scale = float(cfg.get("scale", 1.0))
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Configuration file not found at: {config_filepath}")
+        except KeyError as e:
+            raise KeyError(
+                f"Key {e} missing in YAML {config_filepath}. "
+                f"Expected keys: 'q_tube' and 'v_tube' (both of length nv={self.state.nv})."
+            )
+        except Exception as e:
+            raise RuntimeError(f"Failed to load/parse YAML {config_filepath}: {e}")
+
+        if q_tube.shape != (self.state.nv,) or v_tube.shape != (self.state.nv,):
+            raise ValueError(
+                f"'q_tube' and 'v_tube' must both have shape ({self.state.nv},). "
+                f"Got q_tube={q_tube.shape}, v_tube={v_tube.shape}."
+            )
+        if np.any(q_tube < 0.0) or np.any(v_tube < 0.0):
+            raise ValueError("All corridor widths (q_tube, v_tube) must be non-negative.")
+
+        # Build bounds on the residual r (dimension ndx)
+        delta = np.concatenate([q_tube, v_tube]) * (scale * yaml_scale)  # Δ >= 0
+        if delta.shape != (self.state.ndx,):
+            raise RuntimeError(f"Internal error: delta has shape {delta.shape}, expected ({self.state.ndx},).")
+
+        lb = -delta
+        ub = +delta
+
+        # Quadratic barrier activation on r
+        bounds = crocoddyl.ActivationBounds(lb, ub)
+        activation = crocoddyl.ActivationModelQuadraticBarrier(bounds)
+
+        # State residual in tangent space (r = diff(x_ref, x))
+        residual = crocoddyl.ResidualModelState(self.state, x_ref, self.actuation.nu)
+        
+        cost = crocoddyl.CostModelResidual(self.state, activation, residual)
+        self.cost_model_sum.addCost(name=name, cost=cost, weight=weight)
         return self
 
     def get_costs(self):

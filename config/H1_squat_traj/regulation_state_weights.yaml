@@ -1,0 +1,105 @@
+# ==============================================================================
+#           CONFIGURATION FILE FOR REGULATION STATE WEIGHTS
+#
+#     Modify the values below. A weight of 0.0 effectively disables the
+#     cost on that specific state variable.
+# ==============================================================================
+
+# A brief description of this configuration's purpose.
+description: "Weights for state regulation."
+
+# --- WEIGHTS ON STATE x = [q, v] ---
+
+# --- WEIGHTS ON CONFIGURATION q (size is 33) ---
+# These weights penalize the difference between the current and reference configuration `q`.
+q_weights:
+  # Base Position (x, y, z)
+  - 1.0 # [q 0] base_pos_x
+  - 1.0 # [q 1] base_pos_y
+  - 1.0 # [q 2] base_pos_z 
+
+  # Base Orientation (rot_x, rot_y, rot_z)
+  - 1.0 # [q 3] base_orientation_x
+  - 1.0 # [q 4] base_orientation_y
+  - 1.0 # [q 5] base_orientation_z
+
+  # Joint Positions (27)
+  - 0.0 # [q 7]  Pos of left_hip_yaw_joint
+  - 0.0 # [q 8]  Pos of left_hip_pitch_joint
+  - 0.0 # [q 9]  Pos of left_hip_roll_joint
+  - 0.0 # [q 10] Pos of left_knee_joint
+  - 0.0 # [q 11] Pos of left_ankle_pitch_joint
+  - 0.0 # [q 12] Pos of left_ankle_roll_joint
+
+  - 0.0 # [q 13] Pos of right_hip_yaw_joint
+  - 0.0 # [q 14] Pos of right_hip_pitch_joint
+  - 0.0 # [q 15] Pos of right_hip_roll_joint
+  - 0.0 # [q 16] Pos of right_knee_joint
+  - 0.0 # [q 17] Pos of right_ankle_pitch_joint
+  - 0.0 # [q 18] Pos of right_ankle_roll_joint
+
+  - 1.0 # [q 19] Pos of torso_joint
+
+  - 0.0 # [q 20] Pos of left_shoulder_pitch_joint
+  - 0.0 # [q 21] Pos of left_shoulder_roll_joint
+  - 0.0 # [q 22] Pos of left_shoulder_yaw_joint
+  - 0.0 # [q 23] Pos of left_elbow_joint
+  - 0.0 # [q 24] Pos of left_wrist_roll_joint
+  - 0.0 # [q 25] Pos of left_wrist_pitch_joint
+  - 0.0 # [q 26] Pos of left_wrist_yaw_joint
+
+  - 0.0 # [q 27] Pos of right_shoulder_pitch_joint
+  - 0.0 # [q 28] Pos of right_shoulder_roll_joint
+  - 0.0 # [q 29] Pos of right_shoulder_yaw_joint
+  - 0.0 # [q 30] Pos of right_elbow_joint
+  - 0.0 # [q 31] Pos of right_wrist_roll_joint
+  - 0.0 # [q 32] Pos of right_wrist_pitch_joint
+  - 0.0 # [q 33] Pos of right_wrist_yaw_joint
+
+
+# --- WEIGHTS ON VELOCITY v (size is 33) ---
+# These weights penalize the difference between the current and reference velocity `v`.
+# A high value here acts as damping.
+v_weights:
+  # Base Linear Velocity (vx, vy, vz)
+  - 0.0 # [v 0] base_lin_vel_x
+  - 0.0 # [v 1] base_lin_vel_y
+  - 0.0 # [v 2] base_lin_vel_z
+
+  # Base Angular Velocity (wx, wy, wz)
+  - 0.0 # [v 3] base_ang_vel_x
+  - 0.0 # [v 4] base_ang_vel_y
+  - 0.0 # [v 5] base_ang_vel_z
+
+  # Joint Velocities (27)
+  - 0.0 # [v 6]  Vel of left_hip_yaw_joint
+  - 0.0 # [v 7]  Vel of left_hip_pitch_joint
+  - 0.0 # [v 8]  Vel of left_hip_roll_joint
+  - 0.0 # [v 9]  Vel of left_knee_joint
+  - 0.0 # [v 10] Vel of left_ankle_pitch_joint
+  - 0.0 # [v 11] Vel of left_ankle_roll_joint
+
+  - 0.0 # [v 12] Vel of right_hip_yaw_joint
+  - 0.0 # [v 13] Vel of right_hip_pitch_joint
+  - 0.0 # [v 14] Vel of right_hip_roll_joint
+  - 0.0 # [v 15] Vel of right_knee_joint
+  - 0.0 # [v 16] Vel of right_ankle_pitch_joint
+  - 0.0 # [v 17] Vel of right_ankle_roll_joint
+
+  - 0.0 # [v 18] Vel of torso_joint
+
+  - 0.0 # [v 19] Vel of left_shoulder_pitch_joint
+  - 0.0 # [v 20] Vel of left_shoulder_roll_joint
+  - 0.0 # [v 21] Vel of left_shoulder_yaw_joint
+  - 0.0 # [v 22] Vel of left_elbow_joint
+  - 0.0 # [v 23] Vel of left_wrist_roll_joint
+  - 0.0 # [v 24] Vel of left_wrist_pitch_joint
+  - 0.0 # [v 25] Vel of left_wrist_yaw_joint
+
+  - 0.0 # [v 26] Vel of right_shoulder_pitch_joint
+  - 0.0 # [v 27] Vel of right_shoulder_roll_joint
+  - 0.0 # [v 28] Vel of right_shoulder_yaw_joint
+  - 0.0 # [v 29] Vel of right_elbow_joint
+  - 0.0 # [v 30] Vel of right_wrist_roll_joint
+  - 0.0 # [v 31] Vel of right_wrist_pitch_joint
+  - 0.0 # [v 32] Vel of right_wrist_yaw_joint
