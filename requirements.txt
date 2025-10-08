@@ -1,8 +1,0 @@
-jupyterlab
-pin
-meshcat
-crocoddyl
-mim-solvers
-mujoco
-matplotlib
-pyyaml
