@@ -1,0 +1,17 @@
+[project]
+name = "robot-playground"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "crocoddyl>=3.0.1.1",
+    "jupyterlab>=4.4.9",
+    "matplotlib>=3.10.6",
+    "meshcat>=0.3.2",
+    "mim-solvers>=0.1.1",
+    "mujoco>=3.3.6",
+    "pin>=3.7.0",
+    "pyyaml>=6.0.3",
+    "ruff>=0.14.0",
+]
