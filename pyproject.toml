@@ -12,6 +12,16 @@ dependencies = [
     "mim-solvers>=0.1.1",
     "mujoco>=3.3.6",
     "pin>=3.7.0",
+    "pygame>=2.6.1",
     "pyyaml>=6.0.3",
     "ruff>=0.14.0",
+    "unitree-sdk2py",
+    "robot-deploy @ git+https://github.com/Gepetto/h1v2-Isaac.git@dev#subdirectory=packages/robot_deploy"
 ]
+
+[tool.uv.sources]
+unitree-sdk2py = { git = "https://github.com/ComePerrot/unitree_sdk2_python.git", rev = "master" }
+
+[tool.setuptools]
+packages = ["ocp_tools"]
+package-dir = {"" = "src"}
