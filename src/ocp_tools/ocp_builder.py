@@ -2,8 +2,8 @@ import pinocchio as pin
 import crocoddyl
 import numpy as np
 
-from ocp.cost_manager import CostModelManager
-from ocp.contact_manager import ContactModelManager
+from ocp_tools.cost_manager import CostModelManager
+from ocp_tools.contact_manager import ContactModelManager
 
 class OCPBuilder:
     """Builds a Crocoddyl Optimal Control Problem (OCP).
