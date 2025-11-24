@@ -1,2 +1,8 @@
 .ipynb_checkpoints/
 */__pycache__/
+notebooks/data/
+.env
+.vscode/
+.DS_Store
+*.pyc
+logs/
