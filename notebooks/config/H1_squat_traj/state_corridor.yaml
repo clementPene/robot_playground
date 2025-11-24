@@ -1,0 +1,92 @@
+# Corridors (Δ) on the state residual r = [dq (nv), dv (nv)]
+# - dq: meters for base translations, radians for base rotations and joint angles
+# - dv: m/s for base linear velocities, rad/s for angular and joint velocities
+
+# Global scale (homotopy). You can also override it at runtime via the 'scale=' argument.
+scale: 1.0
+
+# ----- dq tube (nv = 33) -----
+# Free-flyer base (6): [dx, dy, dz, droll, dpitch, dyaw]
+q_tube:
+  - 0.02   # dx [m]
+  - 0.02   # dy [m]
+  - 0.05   # dz [m]
+  - 0.17   # droll [rad]   ~ 10 deg
+  - 0.17   # dpitch [rad]  ~ 10 deg
+  - 0.17   # dyaw [rad]    ~ 10 deg
+
+  # Internal joints (27): uniform values [rad], to be refined per DOF
+  - 0.10  # joint 1 left_hip_yaw_joint
+  - 0.10  # joint 2 left_hip_pitch_joint
+  - 0.10  # joint 3 left_hip_roll_joint
+  - 0.10  # joint 4 left_knee_joint
+  - 0.10  # joint 5 left_ankle_pitch_joint
+  - 0.10  # joint 6 left_ankle_roll_joint
+
+  - 0.10  # joint 7 right_hip_yaw_joint
+  - 0.10  # joint 8 right_hip_pitch_joint
+  - 0.10  # joint 9 right_hip_roll_joint
+  - 0.10  # joint 10 right_knee_joint
+  - 0.10  # joint 11 right_ankle_pitch_joint
+  - 0.10  # joint 12 right_ankle_roll_joint
+
+  - 0.10  # joint 13 torso_joint
+
+  - 0.10  # joint 14 left_shoulder_pitch_joint
+  - 0.10  # joint 15 left_shoulder_roll_joint
+  - 0.10  # joint 16 left_shoulder_yaw_joint
+  - 0.10  # joint 17 left_elbow_joint
+  - 0.10  # joint 18 left_wrist_roll_joint
+  - 0.10  # joint 19 left_wrist_pitch_joint
+  - 0.10  # joint 20 left_wrist_yaw_joint
+
+  - 0.10  # joint 21 right_shoulder_pitch_joint
+  - 0.10  # joint 22 right_shoulder_roll_joint
+  - 0.10  # joint 23 right_shoulder_yaw_joint
+  - 0.10  # joint 24 right_elbow_joint
+  - 0.10  # joint 25 right_wrist_roll_joint
+  - 0.10  # joint 26 right_wrist_pitch_joint
+  - 0.10  # joint 27 right_wrist_yaw_joint
+
+# ----- dv tube (nv = 33) -----
+# Base libre vitesses (6): [vx, vy, vz, wx, wy, wz]
+v_tube:
+  - 0.40  # vx [m/s]
+  - 0.40  # vy [m/s]
+  - 0.60  # vz [m/s]
+  - 1.00  # wx [rad/s]
+  - 1.00  # wy [rad/s]
+  - 1.00  # wz [rad/s]
+
+  # Internal joints (27): uniform values [rad/s], to be refined per DOF
+  - 2.0   # joint 1 left_hip_yaw_joint
+  - 2.0   # joint 2 left_hip_pitch_joint
+  - 2.0   # joint 3 left_hip_roll_joint
+  - 2.0   # joint 4 left_knee_joint
+  - 2.0   # joint 5 left_ankle_pitch_joint
+  - 2.0   # joint 6 left_ankle_roll_joint
+  
+  - 2.0   # joint 7 right_hip_yaw_joint
+  - 2.0   # joint 8 right_hip_pitch_joint
+  - 2.0   # joint 9 right_hip_roll_joint
+  - 2.0   # joint 10 right_knee_joint
+  - 2.0   # joint 11 right_ankle_pitch_joint
+  - 2.0   # joint 12 right_ankle_roll_joint
+
+  - 2.0   # joint 13 torso_joint
+
+  - 2.0   # joint 14 left_shoulder_pitch_joint
+  - 2.0   # joint 15 left_shoulder_roll_joint
+  - 2.0   # joint 16 left_shoulder_yaw_joint
+  - 2.0   # joint 17 left_elbow_joint
+  - 2.0   # joint 18 left_wrist_roll_joint
+  - 2.0   # joint 19 left_wrist_pitch_joint
+  - 2.0   # joint 20 left_wrist_yaw_joint
+
+  - 2.0   # joint 21 right_shoulder_pitch_joint
+  - 2.0   # joint 22 right_shoulder_roll_joint
+  - 2.0   # joint 23 right_shoulder_yaw_joint
+  - 2.0   # joint 24 right_elbow_joint
+  - 2.0   # joint 25 right_wrist_roll_joint
+  - 2.0   # joint 26 right_wrist_pitch_joint
+  - 2.0   # joint 27 right_wrist_yaw_joint

@@ -1,0 +1,49 @@
+# ==============================================================================
+#           CONFIGURATION FILE FOR REGULATION CONTROL (TORQUE) WEIGHTS
+#
+#     Modify the values below. A weight of 0.0 would mean the actuator is
+#     "free" to use, while a high value heavily penalizes its usage.
+# ==============================================================================
+
+# A brief description of this configuration's purpose.
+description: "Control weights for control regulation."
+
+# --- WEIGHT ON CONTROL u (size is 27) ---
+# These weights correspond to the cost of applying torque/force to each actuator.
+u_weights:
+  # --- Left Leg (6 actuators) ---
+  - 1.0 # [u 0]  Torque of left_hip_yaw_joint
+  - 1.0 # [u 1]  Torque of left_hip_pitch_joint
+  - 1.0 # [u 2]  Torque of left_hip_roll_joint
+  - 1.0 # [u 3]  Torque of left_knee_joint
+  - 1.0 # [u 4]  Torque of left_ankle_pitch_joint
+  - 1.0 # [u 5]  Torque of left_ankle_roll_joint
+
+  # --- Right Leg (6 actuators) ---
+  - 1.0 # [u 6]  Torque of right_hip_yaw_joint
+  - 1.0 # [u 7]  Torque of right_hip_pitch_joint
+  - 1.0 # [u 8]  Torque of right_hip_roll_joint
+  - 1.0 # [u 9]  Torque of right_knee_joint
+  - 1.0 # [u 10] Torque of right_ankle_pitch_joint
+  - 1.0 # [u 11] Torque of right_ankle_roll_joint
+
+  # --- Torso (1 actuator) ---
+  - 1.0 # [u 12] Torque of torso_joint
+
+  # --- Left Arm (7 actuators) ---
+  - 1.0 # [u 13] Torque of left_shoulder_pitch_joint
+  - 1.0 # [u 14] Torque of left_shoulder_roll_joint
+  - 1.0 # [u 15] Torque of left_shoulder_yaw_joint
+  - 1.0 # [u 16] Torque of left_elbow_joint
+  - 1.0 # [u 17] Torque of left_wrist_roll_joint
+  - 1.0 # [u 18] Torque of left_wrist_pitch_joint
+  - 1.0 # [u 19] Torque of left_wrist_yaw_joint
+
+  # --- Right Arm (7 actuators) ---
+  - 1.0 # [u 20] Torque of right_shoulder_pitch_joint
+  - 1.0 # [u 21] Torque of right_shoulder_roll_joint
+  - 1.0 # [u 22] Torque of right_shoulder_yaw_joint
+  - 1.0 # [u 23] Torque of right_elbow_joint
+  - 1.0 # [u 24] Torque of right_wrist_roll_joint
+  - 1.0 # [u 25] Torque of right_wrist_pitch_joint
+  - 1.0 # [u 26] Torque of right_wrist_yaw_joint
