@@ -16,12 +16,6 @@ launch Jupyter notebook :
 ```bash
 source .venv/bin/activate
 
-jupyter lab
-```
-
-or
-
-```bash
 uv run jupyter lab
 ```
 
@@ -39,13 +33,5 @@ uv run jupyter lab
 
 
 - `4- h1_squat_MCP.ipynb`  
-  Implementation of MCP with loop on a vanishing horizon. I want it to be a first step to then use it as a controller in MuJoCo.
+  Implementation of MCP with loop on a vanishing horizon.
 
-
-  ## launch H1 on Mujoco
-
-  I used script provided by Unitree to launch the robot in Mujoco. Here are the steps to launch the simulation with a controller
-  ```bash
-  # First windows : launch controller.
-  # go to 
-  ```
