@@ -40,17 +40,6 @@ class OCPBuilder:
         self.state = crocoddyl.StateMultibody(self.rmodel) # input x = (q, v)
         self.actuation = crocoddyl.ActuationModelFloatingBase(self.state) # output u = tau_q
 
-    def set_initial_state(self, new_initial_state: np.ndarray):
-        """Updates the initial state of the problem.
-
-        Args:
-            new_initial_state (np.ndarray): The new state vector [q, v].
-        """
-        if new_initial_state.shape[0] != self.state.nx:
-            raise ValueError(f"The dimension of the new state ({new_initial_state.shape[0]}) "
-                             f"does not match the expected dimension ({self.state.nx}).")
-        self.initial_state = new_initial_state
-
     def build(self,
               running_cost_managers: list[CostModelManager],
               terminal_cost_manager: CostModelManager,
