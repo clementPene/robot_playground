@@ -1,0 +1,28 @@
+# experiment_name: "squat"
+
+# policy_names: ["standing_still", "walk"]
+# policy_merge_steps: 50
+log_experiment: False
+
+mujoco:
+  robot_name: "h12"
+  scene_name: "27dof"
+  reset_keyframe: "standing"  # "standing" or "lying"
+
+  render_dt: 0.02      # viewer refresh rate in seconds
+  episode_length: 10   # max duration of the simulation in seconds
+  simulation_dt: 0.003
+
+  enable_GUI: True
+  print_contacts: True
+  fix_base: False
+  real_time: True
+  elastic_band: False
+
+  log_data: false
+  
+
+real:
+  channel_id: 79
+  net_interface: lo
+  use_mujoco: True

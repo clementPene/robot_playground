@@ -16,7 +16,7 @@ dependencies = [
     "pyyaml>=6.0.3",
     "ruff>=0.14.0",
     "unitree-sdk2py",
-    "robot-deploy @ git+https://github.com/Gepetto/h1v2-Isaac.git@dev#subdirectory=packages/robot_deploy"
+    "robot-deploy @ git+ssh://git@github.com/ConstantRoux/h1v2-imitation.git@fix_standing_posture#subdirectory=packages/robot_deploy"
 ]
 
 [tool.uv.sources]

@@ -32,6 +32,42 @@ def load_robot_paths():
 
     return urdf_filename, mesh_dir
 
+def load_model_to_pinocchio():
+    """
+    Configure pinocchio with input model.
+    Only handles physics model loading, no visualization.
+
+    Returns:
+        tuple: (model, collision_model, visual_model)
+               Returns (None, None, None) in case of error.
+    """
+    
+    try:
+        urdf_path, mesh_path = load_robot_paths()
+    except AssertionError as e:
+        print(f"Error in path files : {e}")
+        return None, None, None
+
+    print("Loading robot model into Pinocchio...")
+    try:
+        model, collision_model, visual_model = pin.buildModelsFromUrdf(
+            urdf_path,
+            mesh_path,
+            pin.JointModelFreeFlyer()
+        )
+        print("Pinocchio model loaded successfully.")
+    except Exception as e:
+        print(f"Error loading model: {e}")
+        return None, None, None
+        
+    # add contact frame
+    model = add_contact_frames(model, contact_z_offset=0.05)
+
+    print("\nPhysics model is ready !")
+
+    return model, collision_model, visual_model
+
+
 def launch_visualization():
     """
     Load and configure the robot, initialize Meshcat and set up the visualizer.
@@ -155,3 +191,51 @@ def add_contact_frames(model,
     return model
 
 
+def print_pin_model_info(model, name="model"):
+    print("\n" + "=" * 80)
+    print(f"Pinocchio model info: {name}")
+    print("=" * 80)
+
+    # Dimensions globales
+    print(f"  nq        = {model.nq}")
+    print(f"  nv        = {model.nv}")
+    print(f"  njoints   = {model.njoints}")
+    print(f"  nframes   = {model.nframes}")
+
+    # Racine (joint 1, 0 = universe)
+    if model.njoints > 1:
+        print("\n  Root joint:")
+        print(f"    id         = 1")
+        print(f"    name       = {model.names[1]}")
+        # parent = model.parents[1]  # normalement 0 (universe)
+        # print(f"    parent id  = {parent}")
+
+    # Liste des joints avec indices dans q et v
+    print("\n  Joints (id ≥ 1) :")
+    print("    id | parent | name                       | q[idx:idx+nq] | v[idx:idx+nv]")
+    print("   ----+--------+----------------------------+---------------+--------------")
+    for jid in range(1, model.njoints):
+        name_j = model.names[jid]
+
+        iq = model.idx_qs[jid]   # index de début dans q
+        nq = model.nqs[jid]      # nb de dofs dans q
+        iv = model.idx_vs[jid]   # index de début dans v
+        nv = model.nvs[jid]      # nb de dofs dans v
+
+        # parent du joint: c'est stocké directement dans model.parents
+        parent = model.parents[jid]
+
+        print(
+            f"   {jid:3d} | {parent:6d} | {name_j:26s} | "
+            f"q[{iq:2d}:{iq+nq:2d}]     | v[{iv:2d}:{iv+nv:2d}]"
+        )
+
+    # Liste des frames (optionnel)
+    print("\n  Frames :")
+    print("    id | parent joint | name")
+    print("   ----+--------------+----------------------------")
+    for fid in range(model.nframes):
+        f = model.frames[fid]
+        print(f"   {fid:3d} | {f.parent:12d} | {f.name:26s}")
+
+    print("=" * 80 + "\n")

@@ -55,8 +55,7 @@ class OCPBuilder:
             running_contact_managers (List[ContactModelManager]): A list of contact managers, one
                 for each running node, defining the contact sequence.
             terminal_contact_manager (ContactModelManager): The contact manager for the terminal node.
-            integrator_type (str, optional): The integration scheme to use.
-                Options: 'euler' or 'rk4'. Defaults to 'euler'.
+            integrator_type (str): The integration scheme ('euler' or 'rk4').
 
         Returns:
             crocoddyl.ShootingProblem: The fully assembled optimal control problem.
